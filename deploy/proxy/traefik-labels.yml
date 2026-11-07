@@ -1,0 +1,12 @@
+# Traefik: Labels fuer den KidsStar-Container (Betriebsart B, PROXY_YUVOMI=false).
+# Die hoehere Prioritaet sorgt dafuer, dass /api/extensions/kidsstar vor Yuvomis
+# Router (Host-Regel ohne Pfad) gewinnt.
+services:
+  kidsstar:
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.kidsstar.rule=Host(`yuvomi.example.org`) && PathPrefix(`/api/extensions/kidsstar`)
+      - traefik.http.routers.kidsstar.priority=100
+      - traefik.http.routers.kidsstar.entrypoints=websecure
+      - traefik.http.routers.kidsstar.tls=true
+      - traefik.http.services.kidsstar.loadbalancer.server.port=8080

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>KidsStar</Name>
+  <Repository>ghcr.io/flessinglabs/yuvomi-kidsstar:latest</Repository>
+  <Registry>https://github.com/FlessingLabs/yuvomi-kidsstar/pkgs/container/yuvomi-kidsstar</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <WebUI>http://[IP]:[PORT:8089]</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/FlessingLabs/yuvomi-kidsstar/main/deploy/unraid/kidsstar.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/FlessingLabs/yuvomi-kidsstar/main/icon.svg</Icon>
+  <Overview>KidsStar for Yuvomi: children earn stars for everyday actions and redeem them in a star shop; includes a "Who are you?" hallway tablet mode.
+
+This container stores the stars (SQLite + pictures in /data). Either open Yuvomi through this container's port (it passes everything else to Yuvomi unchanged), or - if Yuvomi already sits behind a reverse proxy such as Nginx Proxy Manager - set PROXY_YUVOMI=false and route only /api/extensions/kidsstar/ here.
+
+Also install the KidsStar module into Yuvomi (Settings - Modules - Add custom module: FlessingLabs/yuvomi-kidsstar, or copy the module folder). Guide: https://github.com/FlessingLabs/yuvomi-kidsstar</Overview>
+  <Support>https://github.com/FlessingLabs/yuvomi-kidsstar/issues</Support>
+  <Project>https://github.com/FlessingLabs/yuvomi-kidsstar</Project>
+  <Category>Productivity: Tools:</Category>
+  <Config Name="WebUI Port" Target="8080" Default="8089" Mode="tcp" Description="Port of the KidsStar service. Without your own reverse proxy: open Yuvomi through this port." Type="Port" Display="always" Required="true" Mask="false">8089</Config>
+  <Config Name="Yuvomi URL" Target="YUVOMI_URL" Default="http://192.168.1.10:3000" Mode="" Description="Address of your Yuvomi container as seen from here: your Unraid IP and Yuvomi's port." Type="Variable" Display="always" Required="true" Mask="false">http://192.168.1.10:3000</Config>
+  <Config Name="Data" Target="/data" Default="/mnt/user/appdata/kidsstar" Mode="rw" Description="Stars, actions, rewards and pictures. Include it in your backups." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/kidsstar</Config>
+  <Config Name="Pass other paths to Yuvomi" Target="PROXY_YUVOMI" Default="true" Mode="" Description="true = this container is the entrance to Yuvomi. false = you route /api/extensions/kidsstar/ here from your own reverse proxy." Type="Variable" Display="always" Required="true" Mask="false">true</Config>
+  <Config Name="Yuvomi API token (hallway tablet)" Target="YUVOMI_API_TOKEN" Default="" Mode="" Description="Optional. Needed only for the hallway tablet: create it in Yuvomi under Settings - Household - API access with exactly the scopes ext:kidsstar:read and family:read." Type="Variable" Display="always" Required="false" Mask="true"/>
+  <Config Name="TZ" Target="TZ" Default="Europe/Berlin" Mode="" Description="Fallback time zone until a parent has opened KidsStar once (then Yuvomi's household time zone is used)." Type="Variable" Display="advanced" Required="false" Mask="false">Europe/Berlin</Config>
+  <Config Name="PUBLIC_ORIGIN" Target="PUBLIC_ORIGIN" Default="" Mode="" Description="Optional. Fixed public address(es), comma-separated, e.g. https://yuvomi.example.org. Empty = the address the browser used." Type="Variable" Display="advanced" Required="false" Mask="false"/>
+</Container>

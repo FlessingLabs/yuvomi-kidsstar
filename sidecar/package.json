@@ -1,0 +1,14 @@
+{
+  "name": "yuvomi-kidsstar-sidecar",
+  "version": "1.0.0",
+  "description": "Star ledger service for the Yuvomi KidsStar module",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.13" },
+  "scripts": {
+    "start": "node src/main.js",
+    "backup": "node src/backup.js backup",
+    "restore": "node src/backup.js restore"
+  }
+}

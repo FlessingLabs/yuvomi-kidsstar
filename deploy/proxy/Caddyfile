@@ -1,0 +1,11 @@
+# Caddy vor Yuvomi und KidsStar (Betriebsart B, KidsStar mit PROXY_YUVOMI=false).
+# Eine Adresse fuer beide: der Browser schickt das Yuvomi-Session-Cookie dann
+# auch an KidsStar, und Yuvomis Service Worker laesst /api/ in Ruhe.
+yuvomi.example.org {
+	handle /api/extensions/kidsstar/* {
+		reverse_proxy kidsstar:8080
+	}
+	handle {
+		reverse_proxy yuvomi:3000
+	}
+}

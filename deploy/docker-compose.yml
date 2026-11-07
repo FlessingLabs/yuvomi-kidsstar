@@ -1,0 +1,47 @@
+# KidsStar - Ergaenzung zu einer bestehenden Yuvomi-Installation.
+#
+# EIN Container neben Yuvomi, Yuvomi selbst bleibt unveraendert (offizielles
+# Image). Der Dienst speichert Sterne, Aktionen, Belohnungen und Bilder im
+# Volume kidsstar-data.
+#
+# Zwei Betriebsarten:
+#   A) Ohne eigenen Reverse-Proxy (Standard): der Dienst ist der Eingang. Alles
+#      ausserhalb von /api/extensions/kidsstar/ reicht er unveraendert an Yuvomi
+#      weiter. Yuvomi danach ueber http://<server>:8089 oeffnen.
+#   B) Mit eigenem Reverse-Proxy (Caddy, nginx, Traefik, Nginx Proxy Manager):
+#      PROXY_YUVOMI=false setzen, den Port nicht veroeffentlichen und im Proxy
+#      nur /api/extensions/kidsstar/ hierher leiten (deploy/proxy/).
+#
+# YUVOMI_URL: wie der Container Yuvomi erreicht. Im selben Compose-Netzwerk
+# http://yuvomi:3000, sonst die Server-Adresse, z. B. http://192.168.1.10:3000.
+#
+# Flurtablet (optional): ein API-Token aus Yuvomi (Einstellungen -> Haushalt ->
+# API-Zugang, Scopes "ext:kidsstar:read" und "family:read") als Datei
+# ./secrets/kidsstar_api_token ablegen. Ohne Tablet eine LEERE Datei anlegen
+# (touch secrets/kidsstar_api_token): dann bleibt der Tablet-Modus aus.
+
+services:
+  kidsstar:
+    image: ghcr.io/flessinglabs/yuvomi-kidsstar:latest
+    # build: ../sidecar              # stattdessen lokal bauen
+    container_name: kidsstar
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:${KIDSSTAR_HTTP_PORT:-8089}:8080"   # Betriebsart B: entfernen
+    environment:
+      - YUVOMI_URL=${YUVOMI_URL:-http://yuvomi:3000}
+      - PUBLIC_ORIGIN=${KIDSSTAR_PUBLIC_ORIGIN:-}
+      - PROXY_YUVOMI=${KIDSSTAR_PROXY_YUVOMI:-true}
+      - TZ=${TZ:-Europe/Berlin}
+      - YUVOMI_API_TOKEN_FILE=/run/secrets/kidsstar_api_token
+    secrets:
+      - kidsstar_api_token
+    volumes:
+      - kidsstar-data:/data
+
+secrets:
+  kidsstar_api_token:
+    file: ./secrets/kidsstar_api_token
+
+volumes:
+  kidsstar-data:

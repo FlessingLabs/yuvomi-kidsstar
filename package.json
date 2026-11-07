@@ -1,0 +1,13 @@
+{
+  "name": "yuvomi-kidsstar",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "KidsStar: children earn stars for everyday actions and redeem them in a star shop. A Yuvomi module with a sidecar service.",
+  "scripts": {
+    "test": "node --test \"sidecar/test/*.test.js\" \"test/module/*.test.js\"",
+    "start": "node sidecar/src/main.js"
+  },
+  "engines": { "node": ">=22.13" }
+}
